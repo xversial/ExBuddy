@@ -2,8 +2,8 @@ namespace ExBuddy.OrderBotTags.Fish
 {
 	using System;
 	using System.ComponentModel;
-
 	using Clio.XmlEngine;
+	using ff14bot.Enums;
 
 	[XmlElement("PatienceTug")]
 	public class PatienceTug : IEquatable<PatienceTug>

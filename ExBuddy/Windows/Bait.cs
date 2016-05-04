@@ -1,25 +1,20 @@
 ﻿namespace ExBuddy.Windows
 {
 	using System.Threading.Tasks;
-
-	using Buddy.Coroutines;
-
 	using ExBuddy.Enumerations;
 	using ExBuddy.Helpers;
-
 	using ff14bot.Managers;
 
 	public sealed class Bait : Window<Bait>
 	{
 		public Bait()
-			: base("Bait") { }
+			: base("Bait") {}
 
-		public SendActionResult SetBait(uint baitId)
-		{
-			return Control.TrySendAction(4, 0, 0, 0, 0, 0, 0, 1, baitId);
-		}
-
-		public async Task<bool> SelectBait(uint baitId,  ushort baitDelay = 200, ushort maxWait = 2000, bool closeWindow = true)
+		public async Task<bool> SelectBait(
+			uint baitId,
+			ushort baitDelay = 200,
+			ushort maxWait = 2000,
+			bool closeWindow = true)
 		{
 			if (!IsValid)
 			{
@@ -30,7 +25,8 @@
 
 			var result = SendActionResult.None;
 			var attempts = 0;
-			while ((result != SendActionResult.Success || Memory.Bait.SelectedBaitItemId != baitId) && attempts++ < 3 && Behaviors.ShouldContinue)
+			while ((result != SendActionResult.Success || FishingManager.SelectedBaitItemId != baitId) && attempts++ < 3
+			       && Behaviors.ShouldContinue)
 			{
 				result = SetBait(baitId);
 				if (result == SendActionResult.InjectionError)
@@ -38,7 +34,7 @@
 					await Behaviors.Sleep(500);
 				}
 
-				await Behaviors.Wait(maxWait, () => Memory.Bait.SelectedBaitItemId == baitId);
+				await Behaviors.Wait(maxWait, () => FishingManager.SelectedBaitItemId == baitId);
 			}
 
 			if (closeWindow)
@@ -48,6 +44,10 @@
 
 			return result > SendActionResult.InjectionError;
 		}
-	}
 
+		public SendActionResult SetBait(uint baitId)
+		{
+			return Control.TrySendAction(4, 0, 0, 0, 0, 0, 0, 1, baitId);
+		}
+	}
 }
